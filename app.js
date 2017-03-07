@@ -28,7 +28,7 @@ app.use(express.session({
 	})
 }));
 
-app.use(express.favicon(__dirname,'favicon.ico'));//更换favicon路径，避免报错
+app.use(express.favicon(__dirname+'/favicon.ico'));//更换favicon路径，避免报错
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
