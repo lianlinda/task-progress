@@ -2,7 +2,6 @@
 var mongodb = require('./db');
 
 function Task(task){
-    this.id = task.id;
     this.name = task.name;
     this.detail = task.detail;
     this.status = task.status;
@@ -12,7 +11,6 @@ module.exports = Task;
 
 Task.prototype.save = function save(callback){
     var task = {
-        id: this.id,
         name: this.name,
         detail: this.detail,
         status: this.status
@@ -26,7 +24,7 @@ Task.prototype.save = function save(callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.ensureIndex('id', {unique: true});
+            collection.ensureIndex('name', {unique: true});
 
             collection.insert(task, {safe: true}, function(err, task){
                 mongodb.close();
@@ -36,7 +34,7 @@ Task.prototype.save = function save(callback){
     });
 };
 
-Task.get = function get(taskId, callback){
+Task.get = function get(taskName, callback){
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
@@ -46,7 +44,7 @@ Task.get = function get(taskId, callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.findOne({id: taskId}, function(err, doc){
+            collection.findOne({name: taskName}, function(err, doc){
                 mongodb.close();
                 if(doc){
                     var task = new Task(doc);
@@ -83,7 +81,6 @@ Task.getAll = function getAll(callback){
 
 Task.prototype.update = function update(callback){
     var task = {
-        id: this.id,
         name: this.name,
         detail: this.detail,
         status: this.status
@@ -97,7 +94,7 @@ Task.prototype.update = function update(callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.update({id: task.id},
+            collection.update({name: task.name},
                 {$ser: {name: task.name, detail: task.detail, status: task.status}},
                 function(err, result){
                     mongodb.close();
@@ -111,13 +108,13 @@ Task.prototype.update = function update(callback){
     })
 };
 
-Task.deleteTask = function deleteTask(taskId, callback) {
+Task.deleteTask = function deleteTask(taskName, callback) {
     mongodb.open(function(err, db){
         if(err){
             return callback(err);
         }
         db.collection('tasks', function(err, collection){
-            collection.remove({id: taskId}, {safe: true}, function(err, result){
+            collection.remove({name: taskName}, {safe: true}, function(err, result){
                 mongodb.close();
                 if(result){
                     callback(err, result);

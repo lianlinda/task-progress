@@ -1,5 +1,4 @@
 angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', function ($scope, indexAPI) {
-    $scope.id = 0;
     $scope.allTasks = [];
     $scope.editable = false;
     $scope.tempTask = {};//用于编辑任务时数据临时存储
@@ -19,13 +18,11 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         $scope.newTask = '';
         $scope.isAllFinished();*/
         indexAPI.addTask({
-            id: $scope.id,
             taskName: $scope.taskName,
             detail: $scope.taskDetail,
             status: $scope.taskStatus
         }).$promise.then(function (data) {
             console.log(data);
-            $scope.id += 1;
             $('#addTask').modal('hide');
         },function(){
 

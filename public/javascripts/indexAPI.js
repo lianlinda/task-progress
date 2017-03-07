@@ -11,14 +11,13 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             url: '/checkTask',
             method: 'GET',
             param: {
-                id: ''
+                taskName: ''
             }
         },
         addTask: {
             url: '/addTask',
             method: 'POST',
             param: {
-                id: '',
                 taskName: '',
                 detail: '',
                 status: ''
@@ -28,7 +27,6 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             url: '/updateTask',
             method: 'POST',
             param: {
-                id: '',
                 taskName: '',
                 detail: '',
                 status: ''
@@ -38,7 +36,7 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             url: '/deleteTask',
             method: 'POST',
             param: {
-                id: ''
+                taskName: ''
             }
         }
     });

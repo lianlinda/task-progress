@@ -10,12 +10,11 @@ module.exports = function(app){
 
 	app.post('/addTask', function(req, res){
 		var newTask = new task({
-			taskId: req.body.taskId,
             name: req.body.taskName,
             detail: req.body.detail,
             status: req.body.status
 		})
-		task.get(req.body.taskId, function(err, task){
+		task.get(req.body.taskName, function(err, task){
 			if(task){
 				res.send(400, {error: '该任务已存在'});
 			}
@@ -34,12 +33,11 @@ module.exports = function(app){
 
     app.post('/updateTask', function(req, res){
         var newTask = new task({
-            taskId: req.body.taskId,
             name: req.body.taskName,
             detail: req.body.detail,
             status: req.body.status
         })
-        task.get(req.body.taskId, function(err, task){
+        task.get(req.body.taskName, function(err, task){
             if(!task){
                 res.send(400, {error: '该任务不存在'});
             }
@@ -57,7 +55,7 @@ module.exports = function(app){
     });
 
     app.post('/deleteTask', function(req, res){
-    	task.deleteTask(req.body.taskId, function(err, result){
+    	task.deleteTask(req.body.taskName, function(err, result){
     		if(err){
     			res.send(500, {error: err});
 			}else{
@@ -67,7 +65,7 @@ module.exports = function(app){
 	});
 
     app.get('/checkTask', function(req, res){
-    	task.get(req.body.taskId, function(err, task){
+    	task.get(req.body.taskName, function(err, task){
     		if(err){
     			res.send(500, {error: err});
 			}else{
