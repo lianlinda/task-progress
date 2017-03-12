@@ -3,9 +3,13 @@
  */
 angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', function($resource){
     return $resource('', {}, {
-        getAllTask: {
-            url: '/getAllTask',
-            method: 'GET'
+        getTypeTaskList: {
+            url: '/getTypeTaskList',
+            method: 'GET',
+            param: {
+                status: ''
+            },
+            isArray: true //返回来的是array类型
         },
         checkTask: {
             url: '/checkTask',

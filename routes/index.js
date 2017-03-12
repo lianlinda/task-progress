@@ -65,7 +65,7 @@ module.exports = function(app){
 	});
 
     app.get('/checkTask', function(req, res){
-    	task.get(req.body.taskName, function(err, task){
+    	task.get(req.query.taskName, function(err, task){
     		if(err){
     			res.send(500, {error: err});
 			}else{
@@ -74,8 +74,8 @@ module.exports = function(app){
 		})
 	});
 
-    app.get('/getAllTask', function(req, res){
-    	task.getAll(function(err, results){
+    app.get('/getTypeTaskList', function(req, res){
+    	task.getTypeTaskList(req.query.status, function(err, results){
     		if(err){
     			res.send(500, {error: err});
 			}else{

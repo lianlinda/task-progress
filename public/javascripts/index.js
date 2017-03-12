@@ -1,8 +1,19 @@
 angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', function ($scope, indexAPI) {
-    $scope.allTasks = [];
+    /*$scope.allTasks = [];*/
     $scope.editable = false;
     $scope.tempTask = {};//用于编辑任务时数据临时存储
     $scope.index = -1;
+    //获取指定类型的任务
+    $scope.getTypeTaskList = function(type){
+        indexAPI.getTypeTaskList({
+            status: type
+        })
+            .$promise.then(function(data){
+                $scope.allTasks = data;
+            }, function(){
+
+        })
+    };
     //检查任务名长度
     $scope.checkTaskName = function () {
         if($scope.newTask != null && $scope.newTask.length < 20){
@@ -17,6 +28,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         $scope.id += 1;
         $scope.newTask = '';
         $scope.isAllFinished();*/
+        console.log($scope.new);
         indexAPI.addTask({
             taskName: $scope.taskName,
             detail: $scope.taskDetail,
@@ -24,14 +36,32 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         }).$promise.then(function (data) {
             console.log(data);
             $('#addTask').modal('hide');
-        },function(){
-
+        },function(/*data*/){
+            /*console.log(data.data.error);*/
         });
     };
+    //查看任务
+    $scope.check = function(index){
+        indexAPI.checkTask({
+            taskName: $scope.allTasks[index].name
+        }).$promise.then(function(data){
+            console.log(data);
+            $scope.taskName = data.name;
+            $scope.taskDetail = data.detail;
+            $scope.taskStatus = data.status;
+        }, function(){
+
+        })
+    }
     //编辑任务
     $scope.editTask = function (index) {
-        $scope.tempTask.taskName = $scope.allTasks[index].taskName;
-        $scope.index = index;
+        /*$scope.tempTask.taskName = $scope.allTasks[index].taskName;
+        $scope.index = index;*/
+        indexAPI.updateTask({
+            taskName: $scope.taskName,
+            detail: $scope.taskDetail,
+            status: $scope.taskStatus
+        })
     };
     //更新任务
     $scope.updateTask = function () {
@@ -114,7 +144,6 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
             return true;
         }
     };
-    $scope.hide=function(){
-        $('#removeTask').modal('hide');
-    }
+
+    $scope.getTypeTaskList(0);
 }])

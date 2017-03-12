@@ -57,7 +57,7 @@ Task.get = function get(taskName, callback){
     });
 };
 
-Task.getAll = function getAll(callback){
+Task.getTypeTaskList = function getTypeTaskList(type, callback){
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
@@ -67,10 +67,10 @@ Task.getAll = function getAll(callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.find(function(err, docs){
+            collection.find({status: type}).toArray(function(err, items){
                 mongodb.close();
-                if(docs){
-                    callback(err, docs);
+                if(items){
+                    callback(err, items);
                 }else{
                     callback(err, null);
                 }

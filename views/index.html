@@ -17,9 +17,9 @@
         <h1>实习期间</h1>
         <button id="addBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTask">新增任务</button>
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="" ng-click="changeType()">正在做的</a></li>
-            <li role="presentation"><a href="" ng-click="changeType()">有bug的</a></li>
-            <li role="presentation"><a href="" ng-click="changeType()">已经完成的</a></li>
+            <li role="presentation" class="active"><a href="" ng-click="getTypeTaskList(0)">正在做的</a></li>
+            <li role="presentation"><a href="" ng-click="getTypeTaskList(1)">有bug的</a></li>
+            <li role="presentation"><a href="" ng-click="getTypeTaskList(2)">已经完成的</a></li>
             <li><a href=""></a></li>
         </ul>
         <table class="table table-hover">
@@ -33,15 +33,15 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr ng-repeat="task in allTasks">
                     <td>1</td>
-                    <td>例子</td>
+                    <td ng-bind="task.name"></td>
                     <td>
-                        <button type="button" class="btn btn-info" ng-click="check()">查看</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addTask" ng-click="check($index)">查看</button>
                     </td>
                     <td></td>
                     <td>
-                        <button type="button" class="btn btn-primary">修改</button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTask" ng-click="editTask($index)">修改</button>
                         <button type="button" class="btn btn-default">标记为有bug</button>
                         <button type="button" class="btn btn-success">标记为已完成</button>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeTask">删除</button>
