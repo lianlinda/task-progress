@@ -30,12 +30,13 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         $scope.isAllFinished();*/
         console.log($scope.new);
         indexAPI.addTask({
-            taskName: $scope.taskName,
-            detail: $scope.taskDetail,
-            status: $scope.taskStatus
+            name: $scope.tempTask.name,
+            detail: $scope.tempTask.detail,
+            status: $scope.tempTask.status
         }).$promise.then(function (data) {
             console.log(data);
             $('#addTask').modal('hide');
+            $scope.getTypeTaskList(0);
         },function(/*data*/){
             /*console.log(data.data.error);*/
         });
@@ -43,12 +44,10 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     //查看任务
     $scope.check = function(index){
         indexAPI.checkTask({
-            taskName: $scope.allTasks[index].name
+            name: $scope.allTasks[index].name
         }).$promise.then(function(data){
             console.log(data);
-            $scope.taskName = data.name;
-            $scope.taskDetail = data.detail;
-            $scope.taskStatus = data.status;
+            $scope.tempTask = data.data;
         }, function(){
 
         })
