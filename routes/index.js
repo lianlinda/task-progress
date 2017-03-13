@@ -92,4 +92,14 @@ module.exports = function(app){
 			}
 		})
 	});
+
+    app.get('/getTabList', function(req, res){
+    	tab.get(function (err, results) {
+			if(err){
+				res.send(500, {error: err});
+			}else{
+				res.send(200, results);
+			}
+        })
+	})
 }

@@ -42,6 +42,11 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             param: {
                 name: ''
             }
+        },
+        getTabList: {
+            url: '/getTabList',
+            method: 'GET',
+            isArray: true
         }
     });
 }]);

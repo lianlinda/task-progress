@@ -93,6 +93,23 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         })
 
     };
+    $scope.getTabList = function(){
+        indexAPI.getTabList()
+            .$promise.then(function(data){
+                $scope.tablist = data.data;
+            }, function(){
 
+        })
+    };
+
+    $scope.addTab = function(){
+
+    };
+
+    $scope.removeTab = function(){
+
+    };
+
+    $scope.getTabList();
     $scope.getTypeTaskList(0);
 }])
