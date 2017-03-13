@@ -31,7 +31,7 @@ module.exports = function(app){
 		})
 	});
 
-    app.post('/updateTask', function(req, res){
+    app.put('/updateTask', function(req, res){
         var newTask = new task({
             name: req.body.name,
             detail: req.body.detail,

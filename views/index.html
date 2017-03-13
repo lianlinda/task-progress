@@ -15,7 +15,7 @@
 <body>
     <div class="container" ng-controller="progressCtrl">
         <h1>实习期间</h1>
-        <button id="addBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTask">新增任务</button>
+        <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()">新增任务</button>
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="" ng-click="getTypeTaskList(0)">正在做的</a></li>
             <li role="presentation"><a href="" ng-click="getTypeTaskList(1)">有bug的</a></li>
@@ -35,62 +35,13 @@
                     <td>1</td>
                     <td ng-bind="task.name"></td>
                     <td>
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addTask" ng-click="check($index)">查看</button>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTask" ng-click="editTask($index)">修改</button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeTask">删除</button>
+                        <button type="button" class="btn btn-info" ng-click="checkTask(task)">查看</button>
+                        <button type="button" class="btn btn-primary" ng-click="editTask(task)">修改</button>
+                        <button type="button" class="btn btn-danger" ng-click="isRemoveTask(task)">删除</button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <!--<table class="table table-hover">
-            <thead>
-            <tr>
-                <th>序号</th>
-                <th>任务名称</th>
-                <th>bug详情</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>例子</td>
-                <td>
-                    <button type="button" class="btn btn-info">查看</button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary">修改</button>
-                    <button type="button" class="btn btn-success">标记为已完成</button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeTask">删除</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>序号</th>
-                <th>任务名称</th>
-                <th>任务详情</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>例子</td>
-                <td>
-                    <button type="button" class="btn btn-info">查看</button>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-primary">修改</button>
-                    <button type="button" class="btn btn-default">标记为有bug</button>
-                    <button type="button" class="btn btn-success">标记为已完成</button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#removeTask">删除</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>-->
         <div>
             <nav>
                 <ul class="pagination">
@@ -130,28 +81,28 @@
                             <div class="form-group">
                                 <label for="taskName" class="col-sm-2 control-label">任务名称:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="taskName" placeholder="请输入任务名称" ng-model="tempTask.name">
+                                    <input type="text" class="form-control" id="taskName" placeholder="请输入任务名称" ng-model="tempTask.name" ng-disabled="check">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="taskDetail" class="col-sm-2 control-label">任务详情:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="taskDetail" placeholder="请输入任务详情" ng-model="tempTask.detail">
+                                    <input type="text" class="form-control" id="taskDetail" placeholder="请输入任务详情" ng-model="tempTask.detail" ng-disabled="check">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">任务状态:</label>
                                 <div class="col-sm-10">
-                                    <input type="radio" name="status" value="0" ng-model="tempTask.status"><label>正在做的</label>
-                                    <input type="radio" name="status" value="1" ng-model="tempTask.status"><label>有bug的</label>
-                                    <input type="radio" name="status" value="2" ng-model="tempTask.status"><label>已经完成的</label>
+                                    <input type="radio" name="status" value="0" ng-model="tempTask.status" ng-disabled="check"><label>正在做的</label>
+                                    <input type="radio" name="status" value="1" ng-model="tempTask.status" ng-disabled="check"><label>有bug的</label>
+                                    <input type="radio" name="status" value="2" ng-model="tempTask.status" ng-disabled="check"><label>已经完成的</label>
                                 </div>
                             </div>
                             <!--任务开始时间、结束时间、进度、预计完成所需时间、实际完成所需时间、bug详情-->
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" ng-click="addTask()">保存</button>
+                        <button type="button" class="btn btn-primary" ng-click="saveEdit()" ng-if="!check">保存</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </div>
@@ -170,7 +121,7 @@
                         </h4>
                     </div>
                     <div class="modal-body">
-                        是否删除任务:{{tempTask.taskName}}？
+                        是否删除任务:{{tempTask.name}}？
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" ng-click="removeTask()" data-dismiss="modal">确定</button>

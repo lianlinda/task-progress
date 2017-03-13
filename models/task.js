@@ -87,15 +87,15 @@ Task.prototype.update = function update(callback){
     };
     mongodb.open(function(err, db){
         if(err){
+            console.log(err);
             return callback(err);
         }
         db.collection('tasks',function(err,collection){
             if(err){
                 mongodb.close();
-                return callback(err);
             }
             collection.update({name: task.name},
-                {$ser: {name: task.name, detail: task.detail, status: task.status}},
+                {name: task.name, detail: task.detail, status: task.status},
                 function(err, result){
                     mongodb.close();
                     if(result){

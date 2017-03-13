@@ -29,7 +29,7 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
         },
         updateTask: {
             url: '/updateTask',
-            method: 'POST',
+            method: 'PUT',
             param: {
                 name: '',
                 detail: '',
