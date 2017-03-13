@@ -17,10 +17,12 @@
         <h1>实习期间</h1>
         <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()">新增任务</button>
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="" ng-click="getTypeTaskList(0)">正在做的</a></li>
+            <li role="presentation" ng-repeat="tab in tablist"><a href="" ng-click="getTypeTaskList(tab.value)" ng-bind="tab.name"></a></li>
+            <!--<li role="presentation"><a href="" ng-click="getTypeTaskList(0)">正在做的</a></li>
             <li role="presentation"><a href="" ng-click="getTypeTaskList(1)">有bug的</a></li>
-            <li role="presentation"><a href="" ng-click="getTypeTaskList(2)">已经完成的</a></li>
-            <li><a href=""></a></li>
+            <li role="presentation"><a href="" ng-click="getTypeTaskList(2)">已经完成的</a></li>-->
+            <li role="presentation"><a href=""><span class="glyphicon glyphicon-plus"></span></a></li>
+            <li role="presentation"><a href=""><span class="glyphicon glyphicon-minus"></span></a></li>
         </ul>
         <table class="table table-hover">
             <thead>

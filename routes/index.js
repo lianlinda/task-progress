@@ -1,4 +1,5 @@
 var task = require('../models/task.js');
+var tab = require('../models/tab.js');
 /*
  * GET home page.
  */
@@ -55,12 +56,20 @@ module.exports = function(app){
     });
 
     app.post('/deleteTask', function(req, res){
-    	task.deleteTask(req.body.name, function(err, result){
-    		if(err){
-    			res.send(500, {error: err});
-			}else{
-    			res.send(200, {data: result});
-			}
+        task.get(req.body.name, function(err, task){
+            if(!task){
+                res.send(400, {error: '该任务不存在'});
+            }
+            if(err){
+                res.send(500, {error: err});
+            }
+            task.deleteTask(req.body.name, function(err, result){
+            	if(err){
+                    res.send(500, {error: err});
+                }else{
+                    res.send(200, {data: result});
+                }
+            });
 		});
 	});
 

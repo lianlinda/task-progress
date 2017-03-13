@@ -2,7 +2,6 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     $scope.tempTask = {};//用于编辑任务时数据临时存储
     //获取指定类型的任务
     $scope.getTypeTaskList = function(type){
-        console.log($scope.type);
         indexAPI.getTypeTaskList({
             status: type
         })
