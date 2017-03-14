@@ -56,8 +56,8 @@ module.exports = function(app){
     });
 
     app.post('/deleteTask', function(req, res){
-        task.get(req.body.name, function(err, task){
-            if(!task){
+        task.get(req.body.name, function(err, result){
+            if(!result){
                 res.send(400, {error: '该任务不存在'});
             }
             if(err){
@@ -94,12 +94,84 @@ module.exports = function(app){
 	});
 
     app.get('/getTabList', function(req, res){
-    	tab.get(function (err, results) {
+    	tab.getAll(function (err, results) {
 			if(err){
 				res.send(500, {error: err});
 			}else{
 				res.send(200, results);
 			}
         })
-	})
+	});
+
+    app.post('/addTab', function(req, res){
+        var newTab = new tab({
+        	value: req.body.value,
+            name: req.body.name
+        })
+        tab.get(req.body.value, function(err, tab){
+            if(tab){
+                res.send(400, {error: '该tab已存在'});
+            }
+            if(err){
+                res.send(500, {error: err});
+            }
+            newTab.save(function(err){
+                if(err){
+                    res.send(500, {error: err});
+                }else{
+                    res.send(200);
+                }
+            })
+        })
+    });
+
+    app.put('/updateTab', function(req, res){
+        var newTab = new tab({
+            value: req.body.value,
+            name: req.body.name
+        })
+        tab.get(req.body.value, function(err, tab){
+            if(!tab){
+                res.send(400, {error: '该tab不存在'});
+            }
+            if(err){
+                res.send(500, {error: err});
+            }
+            newTab.update(function(err){
+                if(err){
+                    res.send(500, {error: err});
+                }else{
+                    res.send(200);
+                }
+            })
+        })
+    });
+
+    app.post('/deleteTab', function(req, res){
+        tab.get(req.body.value, function(err, result){
+            if(!result){
+                res.send(400, {error: '该tab不存在'});
+            }
+            if(err){
+                res.send(500, {error: err});
+            }
+            tab.delete(req.body.value, function(err, result){
+                if(err){
+                    res.send(500, {error: err});
+                }else{
+                    res.send(200, {data: result});
+                }
+            });
+        });
+    });
+
+    app.get('/checkTab', function(req, res){
+        tab.get(req.query.value, function(err, task){
+            if(err){
+                res.send(500, {error: err});
+            }else{
+                res.send(200, {data: task});
+            }
+        })
+    });
 }

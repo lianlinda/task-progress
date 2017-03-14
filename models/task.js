@@ -125,3 +125,22 @@ Task.deleteTask = function deleteTask(taskName, callback) {
         })
     })
 };
+
+//根据任务状态删除任务
+Task.deleteByStatus = function deleteTask(taskStatus, callback) {
+    mongodb.open(function(err, db){
+        if(err){
+            return callback(err);
+        }
+        db.collection('tasks', function(err, collection){
+            collection.remove({status: taskStatus}, {safe: true}, function(err, result){
+                mongodb.close();
+                if(result){
+                    callback(err, result);
+                }else{
+                    callback(err, null);
+                }
+            })
+        })
+    })
+};

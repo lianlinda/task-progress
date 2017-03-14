@@ -1,5 +1,6 @@
 angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', function ($scope, indexAPI) {
     $scope.tempTask = {};//用于编辑任务时数据临时存储
+    $scope.tempTab = {};
     //获取指定类型的任务
     $scope.getTypeTaskList = function(type){
         indexAPI.getTypeTaskList({
@@ -26,7 +27,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         $scope.edit = false;
         $('#addTask').modal('show');
     };
-    $scope.saveEdit = function(){
+    $scope.saveEditTask = function(){
         if($scope.edit){
             indexAPI.updateTask({
                 name: $scope.tempTask.name,
@@ -96,20 +97,85 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     $scope.getTabList = function(){
         indexAPI.getTabList()
             .$promise.then(function(data){
-                $scope.tablist = data.data;
+                $scope.tablist = data;
+                /*if($scope.tablist.length <= 0){
+                    $scope.addable = false;
+                }else{
+                    $scope.addable = true;
+                }*/
             }, function(){
+                /*$scope.addable = false;*/
+
+        });
+    };
+
+    $scope.getTabDetail = function(item){
+        indexAPI.checkTab({
+            value: item.value
+        }).$promise.then(function(data){
+            $scope.tempTab = data.data;
+        }, function(){
 
         })
     };
 
     $scope.addTab = function(){
+        $scope.tempTab = {};
+        $scope.edit = false;
+        $('#addTab').modal('show');
+    };
 
+    $scope.editTab = function(item){
+        $scope.edit = true;
+        $('#addTab').modal('show');
+        $scope.getTabDetail(item);
+    };
+
+    //确认是否删除tab
+    $scope.isRemoveTab = function (item) {
+        $('#removeTab').modal('show');
+        $scope.tempTab = item;
     };
 
     $scope.removeTab = function(){
+        indexAPI.deleteTab({
+            value: $scope.tempTab.value
+        }).$promise.then(function(){
+            $('#removeTab').modal('hide');
+            $scope.tempTab = {};
+            $scope.getTabList();
+            /*$scope.getTypeTaskList(1);*/
+        }, function(){
 
+        })
+    };
+
+    $scope.saveEditTab = function(){
+        if($scope.edit){
+            indexAPI.updateTab({
+                name: $scope.tempTab.name,
+                value: $scope.tempTab.value
+            }).$promise.then(function (data) {
+                console.log(data);
+                $('#addTab').modal('hide');
+                $scope.getTabList();
+            },function(){
+
+            });
+        }else{
+            indexAPI.addTab({
+                name: $scope.tempTab.name,
+                value: $scope.tempTab.value
+            }).$promise.then(function (data) {
+                console.log(data);
+                $('#addTab').modal('hide');
+                $scope.getTabList();
+            },function(){
+
+            });
+        }
     };
 
     $scope.getTabList();
-    $scope.getTypeTaskList(0);
+    /*$scope.getTypeTaskList(0);*/
 }])

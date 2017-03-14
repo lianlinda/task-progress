@@ -15,14 +15,13 @@
 <body>
     <div class="container" ng-controller="progressCtrl">
         <h1>实习期间</h1>
-        <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()">新增任务</button>
+        <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()" ng-disable="">新增任务</button>
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" ng-repeat="tab in tablist"><a href="" ng-click="getTypeTaskList(tab.value)" ng-bind="tab.name"></a></li>
-            <!--<li role="presentation"><a href="" ng-click="getTypeTaskList(0)">正在做的</a></li>
+            <li role="presentation" ng-repeat="tab in tablist"><a href=""><span ng-bind="tab.name" ng-click="getTypeTaskList(tab.value)"></span><span class="glyphicon glyphicon-pencil" ng-click="editTab(tab)"></span><span class="glyphicon glyphicon-minus" ng-click="isRemoveTab(tab)"></span></a></li>
+            <!--<li role="presentation"><a href="" ng-click="getTypeTaskList(1)">正在做的</a></li>
             <li role="presentation"><a href="" ng-click="getTypeTaskList(1)">有bug的</a></li>
             <li role="presentation"><a href="" ng-click="getTypeTaskList(2)">已经完成的</a></li>-->
             <li role="presentation"><a href="" ng-click="addTab()"><span class="glyphicon glyphicon-plus"></span></a></li>
-            <li role="presentation"><a href="" ng-click="removeTab()"><span class="glyphicon glyphicon-minus"></span></a></li>
         </ul>
         <table class="table table-hover">
             <thead>
@@ -75,7 +74,7 @@
                             &times;
                         </button>
                         <h4 class="modal-title" id="addTaskLabel">
-                            新增任务
+                            任务配置
                         </h4>
                     </div>
                     <div class="modal-body">
@@ -95,16 +94,16 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">任务状态:</label>
                                 <div class="col-sm-10">
-                                    <input type="radio" name="status" value="0" ng-model="tempTask.status" ng-disabled="check"><label>正在做的</label>
-                                    <input type="radio" name="status" value="1" ng-model="tempTask.status" ng-disabled="check"><label>有bug的</label>
-                                    <input type="radio" name="status" value="2" ng-model="tempTask.status" ng-disabled="check"><label>已经完成的</label>
+                                    <span ng-repeat="tab in tablist">
+                                        <input type="radio" name="status" value="{{tab.value}}" ng-model="tempTask.status" ng-disabled="check"><label ng-bind="tab.name"></label>
+                                    </span>
                                 </div>
                             </div>
                             <!--任务开始时间、结束时间、进度、预计完成所需时间、实际完成所需时间、bug详情-->
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" ng-click="saveEdit()" ng-if="!check">保存</button>
+                        <button type="button" class="btn btn-primary" ng-click="saveEditTask()" ng-if="!check">保存</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </div>
@@ -127,6 +126,64 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" ng-click="removeTask()" data-dismiss="modal">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addTab" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="addTabLabel">
+                            tab配置
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="tabValue" class="col-sm-2 control-label">tab值:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="tabValue" placeholder="请输入tab值" ng-model="tempTab.value" ng-disabled="check">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tabName" class="col-sm-2 control-label">tab名称:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="tabName" placeholder="请输入tab名称" ng-model="tempTab.name" ng-disabled="check">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="saveEditTab()" ng-if="!check">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="removeTab" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="removeTabLabel">
+                            删除tab
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" role="alert">删除tab值也会删除该tab页下的所有任务</div>
+                        是否删除tab: {{tempTab.name}}？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="removeTab()" data-dismiss="modal">确定</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                     </div>
                 </div>

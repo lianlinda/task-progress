@@ -1,6 +1,9 @@
 //tab模型
 var mongodb = require('./db');
 
+//获取task模型
+var task = require('./task');
+
 function Tab(tab){
     this.value = tab.value;
     this.name = tab.name;
@@ -32,7 +35,7 @@ Tab.prototype.save = function save(callback){
     });
 };
 
-Tab.get = function get(callback){
+Tab.getAll = function get(callback){
     mongodb.open(function(err, db){
         if(err){
             return callback(err);
@@ -54,7 +57,30 @@ Tab.get = function get(callback){
     });
 };
 
-Tab.update = function(tabValue, callback){
+Tab.get = function get(tabValue, callback){
+    mongodb.open(function(err, db){
+        if(err){
+            return callback(err);
+        }
+        db.collection('tabs', function(err, collection){
+            if(err){
+                mongodb.close();
+                return callback(err);
+            }
+            collection.findOne({value: tabValue}, function(err, doc){
+                mongodb.close();
+                if(doc){
+                    var tab = new Tab(doc);
+                    callback(err, tab);
+                }else{
+                    callback(err, null);
+                }
+            });
+        });
+    });
+};
+
+Tab.prototype.update = function(callback){
     var tab = {
         value: this.value,
         name: this.name
@@ -91,7 +117,8 @@ Tab.delete = function(tabValue, callback){
             collection.remove({value: tabValue}, {safe: true}, function(err, result){
                 mongodb.close();
                 if(result){
-                    callback(err, result);
+                    /*callback(err, result);*/
+                    task.deleteByStatus(tabValue, callback);
                 }else{
                     callback(err, null);
                 }

@@ -47,6 +47,36 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             url: '/getTabList',
             method: 'GET',
             isArray: true
-        }
+        },
+        checkTab: {
+            url: '/checkTab',
+            method: 'GET',
+            param: {
+                value: ''
+            }
+        },
+        addTab: {
+            url: '/addTab',
+            method: 'POST',
+            param: {
+                name: '',
+                value: ''
+            }
+        },
+        updateTab: {
+            url: '/updateTab',
+            method: 'PUT',
+            param: {
+                name: '',
+                value: ''
+            }
+        },
+        deleteTab: {
+            url: '/deleteTab',
+            method: 'POST',
+            param: {
+                value: ''
+            }
+        },
     });
 }]);
