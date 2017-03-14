@@ -45,8 +45,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
                 name: $scope.tempTask.name,
                 detail: $scope.tempTask.detail,
                 status: $scope.tempTask.status
-            }).$promise.then(function (data) {
-                console.log(data);
+            }).$promise.then(function () {
                 $('#addTask').modal('hide');
                 $scope.getTypeTaskList(0);
             },function(){
@@ -98,13 +97,13 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         indexAPI.getTabList()
             .$promise.then(function(data){
                 $scope.tablist = data;
-                /*if($scope.tablist.length <= 0){
+                if($scope.tablist.length <= 0){
                     $scope.addable = false;
                 }else{
                     $scope.addable = true;
-                }*/
+                }
             }, function(){
-                /*$scope.addable = false;*/
+                $scope.addable = false;
 
         });
     };
@@ -166,8 +165,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
             indexAPI.addTab({
                 name: $scope.tempTab.name,
                 value: $scope.tempTab.value
-            }).$promise.then(function (data) {
-                console.log(data);
+            }).$promise.then(function () {
                 $('#addTab').modal('hide');
                 $scope.getTabList();
             },function(){

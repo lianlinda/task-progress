@@ -15,7 +15,7 @@
 <body>
     <div class="container" ng-controller="progressCtrl">
         <h1>实习期间</h1>
-        <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()" ng-disable="">新增任务</button>
+        <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()" ng-disabled="!addable">新增任务</button>
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" ng-repeat="tab in tablist"><a href=""><span ng-bind="tab.name" ng-click="getTypeTaskList(tab.value)"></span><span class="glyphicon glyphicon-pencil" ng-click="editTab(tab)"></span><span class="glyphicon glyphicon-minus" ng-click="isRemoveTab(tab)"></span></a></li>
             <!--<li role="presentation"><a href="" ng-click="getTypeTaskList(1)">正在做的</a></li>
