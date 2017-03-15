@@ -17,7 +17,7 @@
         <h1>实习期间</h1>
         <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()" ng-disabled="!addable">新增任务</button>
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" ng-repeat="tab in tablist" ng-mouseover="point=true" ng-mouseleave="point=false">
+            <li role="presentation" ng-repeat="tab in tablist" ng-mouseover="point=true" ng-mouseleave="point=false" ng-class="{active: activeTab(tab)}">
                 <a href="">
                     <span ng-bind="tab.name" ng-click="getTypeTaskList(tab.value)"></span>
                     <span class="glyphicon glyphicon-pencil" ng-click="editTab(tab)" ng-class="{'icon-true': point, 'icon-false': !point}"></span>
@@ -100,6 +100,7 @@
                                     <span ng-repeat="tab in tablist">
                                         <input type="radio" name="status" value="{{tab.value}}" ng-model="tempTask.status" ng-disabled="check"><label ng-bind="tab.name"></label>
                                     </span>
+                                    <!--<span class="alert alert-danger" role="alert" ng-if="showError">任务状态为必填</span>-->
                                 </div>
                             </div>
                             <!--任务开始时间、结束时间、进度、预计完成所需时间、实际完成所需时间、bug详情-->

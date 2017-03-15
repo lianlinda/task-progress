@@ -9,6 +9,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
             })
                 .$promise.then(function(data){
                 $scope.allTasks = data;
+                $scope.tempType = type;
             }, function(){
 
             })
@@ -183,11 +184,11 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     $scope.activeTab = function(item){
         if($scope.tempType){
             if(item.value == $scope.tempType){
-                return 'active';
+                return true;
             }else{
-                return '';
+                return false;
             }
         }
-    }
+    };
     $scope.getTabList();
 }])

@@ -25,7 +25,7 @@ Tab.prototype.save = function save(callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.ensureIndex('name', {unique: true});
+            collection.ensureIndex('value', {unique: true});
 
             collection.insert(tab, {safe: true}, function(err, tab){
                 mongodb.close();
