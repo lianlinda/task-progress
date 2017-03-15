@@ -15,7 +15,7 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             url: '/checkTask',
             method: 'GET',
             param: {
-                name: ''
+                _id: ''
             }
         },
         addTask: {
@@ -31,6 +31,7 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             url: '/updateTask',
             method: 'PUT',
             param: {
+                _id: '',
                 name: '',
                 detail: '',
                 status: ''
@@ -40,7 +41,7 @@ angular.module('progressApp',['ngResource']).factory('indexAPI', ['$resource', f
             url: '/deleteTask',
             method: 'POST',
             param: {
-                name: ''
+                _id: ''
             }
         },
         getTabList: {

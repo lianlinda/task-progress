@@ -1,7 +1,9 @@
 //任务模型
 var mongodb = require('./db');
+var ObjectId = require('mongodb').ObjectId;
 
 function Task(task){
+    this._id = task._id;
     this.name = task.name;
     this.detail = task.detail;
     this.status = task.status;
@@ -11,6 +13,7 @@ module.exports = Task;
 
 Task.prototype.save = function save(callback){
     var task = {
+        _id: this._id,
         name: this.name,
         detail: this.detail,
         status: this.status
@@ -24,7 +27,6 @@ Task.prototype.save = function save(callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.ensureIndex('name', {unique: true});
 
             collection.insert(task, {safe: true}, function(err, task){
                 mongodb.close();
@@ -34,7 +36,7 @@ Task.prototype.save = function save(callback){
     });
 };
 
-Task.get = function get(taskName, callback){
+Task.get = function get(taskId, callback){
     mongodb.open(function(err,db){
         if(err){
             return callback(err);
@@ -44,7 +46,7 @@ Task.get = function get(taskName, callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.findOne({name: taskName}, function(err, doc){
+            collection.findOne({_id: ObjectId(taskId)}, function(err, doc){
                 mongodb.close();
                 if(doc){
                     var task = new Task(doc);
@@ -58,29 +60,32 @@ Task.get = function get(taskName, callback){
 };
 
 Task.getTypeTaskList = function getTypeTaskList(type, callback){
-    mongodb.open(function(err,db){
-        if(err){
-            return callback(err);
-        }
-        db.collection('tasks', function(err, collection){
+    if(type){
+        mongodb.open(function(err,db){
             if(err){
-                mongodb.close();
                 return callback(err);
             }
-            collection.find({status: type}).toArray(function(err, items){
-                mongodb.close();
-                if(items){
-                    callback(err, items);
-                }else{
-                    callback(err, null);
+            db.collection('tasks', function(err, collection){
+                if(err){
+                    mongodb.close();
+                    return callback(err);
                 }
+                collection.find({status: type}).toArray(function(err, items){
+                    mongodb.close();
+                    if(items){
+                        callback(err, items);
+                    }else{
+                        callback(err, null);
+                    }
+                });
             });
         });
-    });
+    }
 };
 
 Task.prototype.update = function update(callback){
     var task = {
+        _id: this._id,
         name: this.name,
         detail: this.detail,
         status: this.status
@@ -94,8 +99,8 @@ Task.prototype.update = function update(callback){
                 mongodb.close();
                 return callback(err);
             }
-            collection.update({name: task.name},
-                {name: task.name, detail: task.detail, status: task.status},
+            collection.update({_id: ObjectId(task._id)},
+                {$set: {name: task.name, detail: task.detail, status: task.status}},
                 function(err, result){
                     mongodb.close();
                     if(result){
@@ -108,13 +113,13 @@ Task.prototype.update = function update(callback){
     })
 };
 
-Task.deleteTask = function deleteTask(taskName, callback) {
+Task.deleteTask = function deleteTask(taskId, callback) {
     mongodb.open(function(err, db){
         if(err){
             return callback(err);
         }
         db.collection('tasks', function(err, collection){
-            collection.remove({name: taskName}, {safe: true}, function(err, result){
+            collection.remove({_id: ObjectId(taskId)}, {safe: true}, function(err, result){
                 mongodb.close();
                 if(result){
                     callback(err, result);

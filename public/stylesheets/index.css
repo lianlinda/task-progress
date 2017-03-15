@@ -5,3 +5,12 @@
 #addBtn{
     margin-bottom: 20px;
 }
+.icon-true{
+    visibility: visible;
+    cursor: pointer;
+    margin-left: 2px;
+}
+.icon-false{
+    visibility: hidden;
+    margin-left: 2px;
+}

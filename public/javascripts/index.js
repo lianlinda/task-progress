@@ -3,23 +3,27 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     $scope.tempTab = {};
     //获取指定类型的任务
     $scope.getTypeTaskList = function(type){
-        indexAPI.getTypeTaskList({
-            status: type
-        })
-            .$promise.then(function(data){
+        if(type){
+            indexAPI.getTypeTaskList({
+                status: type
+            })
+                .$promise.then(function(data){
                 $scope.allTasks = data;
             }, function(){
 
-        })
+            })
+        }else{
+            $scope.allTasks = {};
+        }
     };
     //检查任务名长度
-    $scope.checkTaskName = function () {
+    /*$scope.checkTaskName = function () {
         if($scope.newTask != null && $scope.newTask.length < 20){
             $scope.showError = false;
         }else{
             $scope.showError = true;
         }
-    };
+    };*/
     //添加任务
     $scope.addTask = function () {
         $scope.tempTask = {};
@@ -30,13 +34,13 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     $scope.saveEditTask = function(){
         if($scope.edit){
             indexAPI.updateTask({
+                _id: $scope.tempTask._id,
                 name: $scope.tempTask.name,
                 detail: $scope.tempTask.detail,
                 status: $scope.tempTask.status
-            }).$promise.then(function (data) {
-                console.log(data);
+            }).$promise.then(function () {
                 $('#addTask').modal('hide');
-                $scope.getTypeTaskList(0);
+                $scope.getTypeTaskList($scope.tempTask.status);
             },function(){
 
             });
@@ -47,7 +51,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
                 status: $scope.tempTask.status
             }).$promise.then(function () {
                 $('#addTask').modal('hide');
-                $scope.getTypeTaskList(0);
+                $scope.getTypeTaskList($scope.tempTask.status);
             },function(){
 
             });
@@ -68,7 +72,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     };
     $scope.getTaskDetail = function(item){
         indexAPI.checkTask({
-            name: item.name
+            _id: item._id
         }).$promise.then(function(data){
             $scope.tempTask = data.data;
         }, function(){
@@ -83,11 +87,11 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     //删除任务
     $scope.removeTask = function () {
         indexAPI.deleteTask({
-            name: $scope.tempTask.name
+            _id: $scope.tempTask._id
         }).$promise.then(function(){
             $('#removeTask').modal('hide');
             $scope.tempTask = {};
-            $scope.getTypeTaskList(0);
+            $scope.getTypeTaskList($scope.tempType);
         }, function(){
 
         })
@@ -99,9 +103,12 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
                 $scope.tablist = data;
                 if($scope.tablist.length <= 0){
                     $scope.addable = false;
+                    $scope.tempType = '';
                 }else{
                     $scope.addable = true;
+                    $scope.tempType = $scope.tablist[0].value;
                 }
+                $scope.getTypeTaskList($scope.tempType);
             }, function(){
                 $scope.addable = false;
 
@@ -143,7 +150,6 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
             $('#removeTab').modal('hide');
             $scope.tempTab = {};
             $scope.getTabList();
-            /*$scope.getTypeTaskList(1);*/
         }, function(){
 
         })
@@ -154,8 +160,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
             indexAPI.updateTab({
                 name: $scope.tempTab.name,
                 value: $scope.tempTab.value
-            }).$promise.then(function (data) {
-                console.log(data);
+            }).$promise.then(function () {
                 $('#addTab').modal('hide');
                 $scope.getTabList();
             },function(){
@@ -174,6 +179,15 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         }
     };
 
+    //tab页添加active样式
+    $scope.activeTab = function(item){
+        if($scope.tempType){
+            if(item.value == $scope.tempType){
+                return 'active';
+            }else{
+                return '';
+            }
+        }
+    }
     $scope.getTabList();
-    /*$scope.getTypeTaskList(0);*/
 }])
