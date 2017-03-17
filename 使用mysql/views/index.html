@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en" ng-app="progressApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>实习所做的事</title>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="./stylesheets/index.css">
+
+</head>
+<body>
+    <div class="container" ng-controller="progressCtrl">
+        <h1>实习期间</h1>
+        <button id="addBtn" type="button" class="btn btn-primary" ng-click="addTask()" ng-disabled="!addable">新增任务</button>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" ng-repeat="tab in tablist" ng-mouseover="point=true" ng-mouseleave="point=false" ng-class="{active: activeTab(tab)}">
+                <a href="">
+                    <span ng-bind="tab.name" ng-click="getTypeTaskList(tab.value)"></span>
+                    <span class="glyphicon glyphicon-pencil" ng-click="editTab(tab)" ng-class="{'icon-true': point, 'icon-false': !point}"></span>
+                    <span class="glyphicon glyphicon-minus" ng-click="isRemoveTab(tab)" ng-class="{'icon-true': point, 'icon-false': !point}"></span>
+                </a>
+            </li>
+            <li role="presentation"><a href="" ng-click="addTab()"><span class="glyphicon glyphicon-plus"></span></a></li>
+        </ul>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>任务名称</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="task in allTasks">
+                    <td>1</td>
+                    <td ng-bind="task.name"></td>
+                    <td>
+                        <button type="button" class="btn btn-info" ng-click="checkTask(task)">查看</button>
+                        <button type="button" class="btn btn-primary" ng-click="editTask(task)">修改</button>
+                        <button type="button" class="btn btn-danger" ng-click="isRemoveTask(task)">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!--<div>
+            <nav>
+                <ul class="pagination">
+                    <li><a href="#">&laquo;</a></li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">&raquo;</a></li>
+                </ul>
+            </nav>
+            第<input type="number" ng-model="pageNum">页
+            每页
+            <select ng-model="perPageSize">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+            共<span ng-bind="total"> </span>条
+        </div>-->
+
+        <div class="modal fade" id="addTask" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="addTaskLabel">
+                            任务配置
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="taskName" class="col-sm-2 control-label">任务名称:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="taskName" placeholder="请输入任务名称" ng-model="tempTask.name" ng-disabled="check">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskDetail" class="col-sm-2 control-label">任务详情:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="taskDetail" placeholder="请输入任务详情" ng-model="tempTask.detail" ng-disabled="check">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">任务状态:</label>
+                                <div class="col-sm-10">
+                                    <span ng-repeat="tab in tablist">
+                                        <input type="radio" name="status" value="{{tab.value}}" ng-model="tempTask.status" ng-disabled="check"><label ng-bind="tab.name"></label>
+                                    </span>
+                                    <!--<span class="alert alert-danger" role="alert" ng-if="showError">任务状态为必填</span>-->
+                                </div>
+                            </div>
+                            <!--任务开始时间、结束时间、进度、预计完成所需时间、实际完成所需时间、bug详情-->
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="saveEditTask()" ng-if="!check">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="removeTask" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="removeTaskLabel">
+                            删除任务
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        是否删除任务:{{tempTask.name}}？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="removeTask()" data-dismiss="modal">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addTab" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="addTabLabel">
+                            tab配置
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="tabValue" class="col-sm-2 control-label">tab值:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="tabValue" placeholder="请输入tab值" ng-model="tempTab.value" ng-disabled="edit">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tabName" class="col-sm-2 control-label">tab名称:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="tabName" placeholder="请输入tab名称" ng-model="tempTab.name">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="saveEditTab()" ng-if="!check">保存</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="removeTab" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="removeTabLabel">
+                            删除tab
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" role="alert">删除tab值也会删除该tab页下的所有任务</div>
+                        是否删除tab: {{tempTab.name}}？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" ng-click="removeTab()" data-dismiss="modal">确定</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <!-- HTML5 Shim 和 Respond.js 用于让 IE8 支持 HTML5元素和媒体查询 -->
+    <!-- 注意： 如果通过 file://  引入 Respond.js 文件，则该文件无法起效果 -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <script src="./javascripts/angular.js"></script>
+    <script src="./javascripts/angular-resource.js"></script>
+    <script src="./javascripts/indexAPI.js"></script>
+    <script src="./javascripts/index.js"></script>
+
+</body>
+</html>
