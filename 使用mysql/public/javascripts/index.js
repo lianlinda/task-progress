@@ -35,7 +35,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     $scope.saveEditTask = function(){
         if($scope.edit){
             indexAPI.updateTask({
-                _id: $scope.tempTask._id,
+                id: $scope.tempTask.id,
                 name: $scope.tempTask.name,
                 detail: $scope.tempTask.detail,
                 status: $scope.tempTask.status
@@ -73,7 +73,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     };
     $scope.getTaskDetail = function(item){
         indexAPI.checkTask({
-            _id: item._id
+            id: item.id
         }).$promise.then(function(data){
             $scope.tempTask = data.data;
         }, function(){
@@ -88,7 +88,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
     //删除任务
     $scope.removeTask = function () {
         indexAPI.deleteTask({
-            _id: $scope.tempTask._id
+            id: $scope.tempTask.id
         }).$promise.then(function(){
             $('#removeTask').modal('hide');
             $scope.tempTask = {};
@@ -120,7 +120,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         indexAPI.checkTab({
             value: item.value
         }).$promise.then(function(data){
-            $scope.tempTab = data.data;
+            $scope.tempTab = data.data[0];
         }, function(){
 
         })

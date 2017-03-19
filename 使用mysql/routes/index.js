@@ -110,7 +110,7 @@ module.exports = function(app){
             name: req.body.name
         })
         tab.get(req.body.value, function(err, tab){
-            if(tab){
+            if(tab.length > 0){
                 res.send(400, {error: '该tab已存在'});
             }
             if(err){
@@ -167,11 +167,11 @@ module.exports = function(app){
     });
 
     app.get('/checkTab', function(req, res){
-        tab.get(req.query.value, function(err, task){
+        tab.get(req.query.value, function(err, tab){
             if(err){
                 res.send(500, {error: err});
             }else{
-                res.send(200, {data: task});
+                res.send(200, {data: tab});
             }
         })
     });

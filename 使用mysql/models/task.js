@@ -1,5 +1,5 @@
 //任务模型
-var connection = require('./connection');
+var pool = require('./pool');
 
 function Task(task){
     this.id = task.id;
@@ -15,7 +15,7 @@ var sql, sqlParams;
 Task.prototype.save = function save(callback){
     sql = 'INSERT INTO task(name, detail, status) VALUES (?, ?, ?)';
     sqlParams = [this.name, this.detail, this.status];
-    connection.connect(function (err) {
+    /*connection.connect(function (err) {
         if(err){
             return callback(err);
         }
@@ -25,12 +25,22 @@ Task.prototype.save = function save(callback){
                 return callback(err);
             }
         })
-    });
+    });*/
     
 };
 
 Task.get = function get(taskId, callback){
-
+    sql = 'SELECT FROM task WHERE id = ?';
+    pool.getConnection(function(err, conn){
+        if(err){
+            callback(err);
+        }else{
+            conn.query(sql, taskId, function(err,vals){
+                conn.release();
+                callback(err, vals);
+            })
+        }
+    })
 };
 
 Task.getTypeTaskList = function getTypeTaskList(type, callback){
