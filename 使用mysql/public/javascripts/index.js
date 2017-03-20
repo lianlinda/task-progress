@@ -75,7 +75,7 @@ angular.module('progressApp').controller('progressCtrl',['$scope', 'indexAPI', f
         indexAPI.checkTask({
             id: item.id
         }).$promise.then(function(data){
-            $scope.tempTask = data.data;
+            $scope.tempTask = data.data[0];
         }, function(){
 
         })

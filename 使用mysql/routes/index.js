@@ -15,21 +15,13 @@ module.exports = function(app){
             detail: req.body.detail,
             status: req.body.status
 		})
-		task.get(req.body.id, function(err, task){
-			if(task){
-				res.send(400, {error: '该任务已存在'});
-			}
-			if(err){
+        newTask.save(function(err){
+            if(err){
                 res.send(500, {error: err});
-			}
-			newTask.save(function(err){
-				if(err){
-					res.send(500, {error: err});
-				}else{
-                    res.send(200);
-				}
-			})
-		})
+            }else{
+                res.send(200);
+            }
+        })
 	});
 
     app.put('/updateTask', function(req, res){
@@ -58,6 +50,7 @@ module.exports = function(app){
 
     app.post('/deleteTask', function(req, res){
         task.get(req.body.id, function(err, result){
+            console.log(result);
             if(!result){
                 res.send(400, {error: '该任务不存在'});
             }

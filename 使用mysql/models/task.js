@@ -13,29 +13,28 @@ module.exports = Task;
 var sql, sqlParams;
 
 Task.prototype.save = function save(callback){
-    sql = 'INSERT INTO task(name, detail, status) VALUES (?, ?, ?)';
+    sql = 'INSERT INTO task(name,detail,status) VALUES (?,?,?)';
     sqlParams = [this.name, this.detail, this.status];
-    /*connection.connect(function (err) {
-        if(err){
-            return callback(err);
-        }
-        connection.query(sql, sqlParams, function(err, result){
-            connection.end();
-            if(err){
-                return callback(err);
-            }
-        })
-    });*/
-    
-};
-
-Task.get = function get(taskId, callback){
-    sql = 'SELECT FROM task WHERE id = ?';
     pool.getConnection(function(err, conn){
         if(err){
             callback(err);
         }else{
-            conn.query(sql, taskId, function(err,vals){
+            conn.query(sql, sqlParams, function(err){
+                conn.release();
+                callback(err);
+            })
+        }
+    })
+    
+};
+
+Task.get = function get(taskId, callback){
+    sql = 'SELECT * FROM task WHERE id = ?';
+    pool.getConnection(function(err, conn){
+        if(err){
+            callback(err);
+        }else{
+            conn.query(sql, taskId, function(err, vals){
                 conn.release();
                 callback(err, vals);
             })
@@ -45,25 +44,73 @@ Task.get = function get(taskId, callback){
 
 Task.getTypeTaskList = function getTypeTaskList(type, callback){
     if(type){
-
+        sql = 'SELECT * FROM task WHERE status = ?';
+        pool.getConnection(function(err, conn){
+            if(err){
+                callback(err);
+            }else{
+                conn.query(sql, type, function(err, vals){
+                    conn.release();
+                    callback(err, vals);
+                })
+            }
+        })
     }
 };
 
 Task.prototype.update = function update(callback){
-    var task = {
-        id: this.id,
-        name: this.name,
-        detail: this.detail,
-        status: this.status
-    };
+    sql = 'UPDATE task SET name = ?, detail = ?, status = ? WHERE id = ?';
+    sqlParams = [this.name, this.detail, this.status, this.id];
+    pool.getConnection(function(err, conn){
+        if(err){
+            callback(err);
+        }else{
+            conn.query(sql, sqlParams, function(err, result){
+                conn.release();
+                if(result){
+                    callback(err, result);
+                }else{
+                    callback(err, null);
+                }
+            })
+        }
+    })
 
 };
 
 Task.deleteTask = function deleteTask(taskId, callback) {
-
+    sql = 'DELETE FROM task WHERE id = ?';
+    pool.getConnection(function(err, conn){
+        if(err){
+            callback(err);
+        }else{
+            conn.query(sql, taskId, function(err, result){
+                conn.release();
+                if(result){
+                    callback(err, result);
+                }else{
+                    callback(err, null);
+                }
+            })
+        }
+    })
 };
 
 //根据任务状态删除任务
 Task.deleteByStatus = function deleteTask(taskStatus, callback) {
-
+    sql = 'DELETE FROM task WHERE status = ?';
+    pool.getConnection(function(err, conn){
+        if(err){
+            callback(err);
+        }else{
+            conn.query(sql, taskStatus, function(err, result){
+                conn.release();
+                if(result){
+                    callback(err, result);
+                }else{
+                    callback(err, null);
+                }
+            })
+        }
+    })
 };
